@@ -1,3 +1,5 @@
+use std::any::type_name;
+
 #[derive(Debug)]
 enum Types {
     UI8 {r#type: String, value: u8},
@@ -14,9 +16,12 @@ struct Program {
 }
 
 pub fn parse_data(input: &String) {
-    let input: u8 = input.parse().unwrap();
-    let return_val = Types::UI8{ 
-        r#type: String::from("UI8"), 
+    let byte = input.as_bytes();
+    println!("{:?}", byte);
+    let input: u128 = input.parse().unwrap();
+
+    let return_val = Types::UI128{ 
+        r#type: String::from("UI128"), 
         value: input,
     };
     program(return_val);
