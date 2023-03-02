@@ -1,13 +1,36 @@
 pub struct Scanner {
-
+    source: String,
+    tokens: Vec<Token>,
+    start: u64,
+    current: u64,
+    line: u64,
 }
 
 impl Scanner {
     pub fn new(_source: &str) -> Self {
-        Self {}
+        Self {
+            source: source.to_string(),
+            tokens: vec![],
+            start: 0,
+            current: 0,
+            line: 1,
+        }
     }
 
-    pub fn scan_tokens(self: &Self) -> Result<Vec<Token>, String> {
+    pub fn scan_tokens(self: &mut Self) -> Result<Vec<Token>, String> {
+        while !self.is_at_end() {
+            self.start = self.current;
+            self.scan_tokens()?;
+        }
+        self.tokens.push(Token{ token_type: Eof, lexeme: "".to_string(), literal: None, line_number: self.line});
+        Ok(self.tokens)
+    }
+
+    pub fn is_at_end(self: &self) -> bool {
+        self.current >= self.source.len() as u64
+    }
+
+    pub fn scan_token(self: &mut Self) -> Result<Token, String> {
         todo!()
     }
 }
@@ -63,6 +86,12 @@ pub enum TokenType {
     Eof,
 }
 
+impl std::fmt::Display for TokenType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "{:?}", self)
+    }
+}
+
 #[derive(Debug)]
 pub enum LiteralValue {
     IntValue(i64),
@@ -88,4 +117,8 @@ impl Token {
             line_number,
         }
     }
-}
+
+    pub fn to_string(self: &Self) -> String {
+        format!("{} {} {:?}", self.token_type, self.lexeme, self.literal)
+    }
+}   
