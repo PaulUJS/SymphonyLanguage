@@ -9,19 +9,20 @@ use crate::scanner::*;
 fn run_file(path: &str) ->Result<(), String> {
     // Reads program file
     match fs::read_to_string(path) {
-        Err(msg) => return Err(msg.to_string()),
+        Err(msg) => Err(msg.to_string()),
         Ok(contents) => return run(&contents),
     } 
 }
 
 fn run(contents: &str) -> Result<(), String> {
-    let scanner = Scanner::new(contents);
-    let tokens = scanner.scan_tokens()?;
+    let mut scanner = Scanner::new(contents);
+    let tokens = scanner.scan_tokens();
 
     for token in tokens {
         println!("{:?}", token);
     }
-    return Ok(());
+
+    Ok(())
 }
 
 // Basic REPL without the evaluation
@@ -34,7 +35,9 @@ fn run_prompt() -> Result<(), String> {
         }
 
         let mut input = String::new();
-        match io::stdin().lock().read_line(&mut input) {
+        let stdin = io::stdin();
+        let mut handle = stdin.lock();
+        match handle.read_line(&mut input) {
             Ok(n) => {
                 if n <= 1 {
                     return Ok(());
@@ -45,9 +48,9 @@ fn run_prompt() -> Result<(), String> {
             
         println!("{}", input);
         match run(&input) {
-            Ok(_) => (),
-            Err(msg) => println!("{}", msg),
-        }
+            Ok(_) => Ok(()),
+            Err(msg) => Err(msg),
+        };
     }
 }
 
