@@ -4,7 +4,9 @@ use std::process::exit;
 use std::io::{self, BufRead, Write};
 
 mod scanner;
+mod expression;
 use crate::scanner::*;
+use crate::expression::*;
 
 fn run_file(path: &str) ->Result<(), String> {
     // Reads program file
