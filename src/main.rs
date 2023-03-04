@@ -5,6 +5,8 @@ use std::io::{self, BufRead, Write};
 
 mod scanner;
 mod expression;
+mod parser;
+use crate::parser::*;
 use crate::scanner::*;
 use crate::expression::*;
 
